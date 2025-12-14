@@ -267,31 +267,31 @@
         const audioUrl = ayah.audio ? ayah.audio['05'] : '';
         
         // Convert number to Arabic-Indic digits for mushaf style
-        const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '��', '٧', '٨', '٩'];
+        const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
         const ayahNumberArabic = String(ayah.numberInSurah).split('').map(d => arabicNumbers[parseInt(d)]).join('');
 
         return `
           <div style="margin-bottom: 16px; padding: 16px; background-color: white; border-bottom: 1px solid #e5e7eb;">
-            <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 12px;">
-              <div class="arabic-text" style="flex: 1; color: #111827;">
-                ${text} <span style="display: inline-block; font-size: 28px; margin: 0 8px; color: #6b7280; position: relative; top: 2px;">۝${ayahNumberArabic}</span>
-              </div>
-              <div style="display: flex; gap: 8px; flex-shrink: 0;">
-                <button onclick="copyAyah(${ayah.numberInSurah}, \`${text.replace(/`/g, '\\`')}\`, \`${ayah.translation ? ayah.translation.replace(/`/g, '\\`') : ''}\`)" style="width: 36px; height: 36px; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #374151;" title="Salin ayat">
-                  <i class="fas fa-copy" style="font-size: 12px;"></i>
-                </button>
-                ${audioUrl ? `
-                  <button onclick="playAudio('${audioUrl}')" style="width: 36px; height: 36px; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #374151;" title="Putar audio">
-                    <i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>
-                  </button>
-                ` : ''}
-              </div>
+            <div class="arabic-text" style="color: #111827; margin-bottom: 12px; text-align: justify;">
+              ${text} <span style="display: inline-block; font-size: 28px; margin: 0 8px; color: #6b7280; position: relative; top: 2px;">۝${ayahNumberArabic}</span>
             </div>
             ${showTranslation && ayah.translation ? `
-              <div style="padding-left: 44px; color: #4b5563; font-size: 14px; line-height: 1.7;">
+              <div style="color: #4b5563; font-size: 14px; line-height: 1.7; margin-bottom: 12px; text-align: justify;">
                 ${ayah.translation}
               </div>
             ` : ''}
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+              <button onclick="copyAyah(${ayah.numberInSurah}, \`${text.replace(/`/g, '\\`')}\`, \`${ayah.translation ? ayah.translation.replace(/`/g, '\\`') : ''}\`)" style="padding: 6px 12px; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: #374151; font-size: 13px;" title="Salin ayat">
+                <i class="fas fa-copy" style="font-size: 11px;"></i>
+                <span>Salin</span>
+              </button>
+              ${audioUrl ? `
+                <button onclick="playAudio('${audioUrl}')" style="padding: 6px 12px; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: #374151; font-size: 13px;" title="Putar audio">
+                  <i class="fas fa-play" style="font-size: 11px;"></i>
+                  <span>Putar</span>
+                </button>
+              ` : ''}
+            </div>
           </div>
         `;
       }).join('');
@@ -514,5 +514,5 @@
 
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9add451433f1a8cd',t:'MTc2NTcxMDc4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9add506512dafdc7',t:'MTc2NTcxMTI0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
