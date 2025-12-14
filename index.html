@@ -36,6 +36,57 @@
       color: #212529;
     }
     
+    /* Kotak Inspirasi */
+    .inspiration-box {
+      background: linear-gradient(135deg, #264b77 0%, #1a3a5c 100%);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      color: white;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .inspiration-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+    
+    .inspiration-text {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    
+    .inspiration-source {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .refresh-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+    }
+    
+    .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(180deg);
+    }
+    
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -126,7 +177,16 @@
   <div class="container"><!-- Header -->
    <header>
     <h1>Aplikasi Islami</h1>
-   </header><!-- Menu Grid -->
+   </header><!-- Kotak Inspirasi Random -->
+   <div class="inspiration-box"><button class="refresh-btn" onclick="changeInspiration()" title="Ganti"> <i class="fas fa-sync-alt"></i> </button>
+    <div class="inspiration-icon" id="inspirationIcon"><i class="fas fa-book-quran"></i>
+    </div>
+    <div class="inspiration-text" id="inspirationText">
+     Loading...
+    </div>
+    <div class="inspiration-source" id="inspirationSource">
+    </div>
+   </div><!-- Menu Grid -->
    <main class="menu-grid"><!-- Al-Qur'an --> <a href="quran.html" class="menu-card">
      <div class="menu-icon"><i class="fas fa-book-quran"></i>
      </div>
@@ -156,7 +216,7 @@
      <div class="menu-icon"><i class="fas fa-hand-point-up"></i>
      </div>
      <div class="menu-label">
-      Lainnya
+      Tasbih Digital
      </div></a>
    </main>
   </div><!-- Footer Media Sosial -->
@@ -168,5 +228,89 @@
     <p class="footer-copyright">© 2025 Aplikasi Islami</p>
    </div>
   </footer>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9adbc96fc0f9fda4',t:'MTc2NTY5NTIzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script>
+    // Koleksi inspirasi (ayat, doa, hadits)
+    const inspirations = [
+      {
+        type: 'ayat',
+        icon: 'fa-book-quran',
+        text: 'وَمَن يَتَّقِ ٱللَّهَ يَجْعَل لَّهُۥ مَخْرَجًا - Dan barangsiapa bertakwa kepada Allah niscaya Dia akan mengadakan baginya jalan keluar.',
+        source: 'QS. At-Talaq: 2'
+      },
+      {
+        type: 'ayat',
+        icon: 'fa-book-quran',
+        text: 'إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا - Sesungguhnya bersama kesulitan ada kemudahan.',
+        source: 'QS. Al-Insyirah: 6'
+      },
+      {
+        type: 'ayat',
+        icon: 'fa-book-quran',
+        text: 'فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا - Maka sesungguhnya bersama kesulitan ada kemudahan.',
+        source: 'QS. Al-Insyirah: 5'
+      },
+      {
+        type: 'doa',
+        icon: 'fa-hands-praying',
+        text: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ - Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka.',
+        source: 'Doa Harian'
+      },
+      {
+        type: 'doa',
+        icon: 'fa-hands-praying',
+        text: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي - Ya Tuhanku, lapangkanlah dadaku dan mudahkanlah urusanku.',
+        source: 'Doa Memohon Kemudahan'
+      },
+      {
+        type: 'hadits',
+        icon: 'fa-scroll',
+        text: 'خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ - Sebaik-baik kalian adalah yang mempelajari Al-Qur\'an dan mengajarkannya.',
+        source: 'HR. Bukhari'
+      },
+      {
+        type: 'hadits',
+        icon: 'fa-scroll',
+        text: 'الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ - Mukmin yang kuat lebih baik dan lebih dicintai Allah daripada mukmin yang lemah.',
+        source: 'HR. Muslim'
+      },
+      {
+        type: 'ayat',
+        icon: 'fa-book-quran',
+        text: 'وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ - Dan janganlah kamu berputus asa dari rahmat Allah.',
+        source: 'QS. Yusuf: 87'
+      },
+      {
+        type: 'doa',
+        icon: 'fa-hands-praying',
+        text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا - Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima.',
+        source: 'Doa Memohon Ilmu'
+      },
+      {
+        type: 'hadits',
+        icon: 'fa-scroll',
+        text: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ - Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.',
+        source: 'HR. Muslim'
+      }
+    ];
+
+    let currentIndex = -1;
+
+    function changeInspiration() {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * inspirations.length);
+      } while (newIndex === currentIndex && inspirations.length > 1);
+      
+      currentIndex = newIndex;
+      const inspiration = inspirations[currentIndex];
+      
+      document.getElementById('inspirationIcon').innerHTML = `<i class="fas ${inspiration.icon}"></i>`;
+      document.getElementById('inspirationText').textContent = inspiration.text;
+      document.getElementById('inspirationSource').textContent = inspiration.source;
+    }
+
+    // Tampilkan inspirasi pertama kali saat halaman dimuat
+    window.addEventListener('DOMContentLoaded', changeInspiration);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9adbd0314609fda4',t:'MTc2NTY5NTUxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
