@@ -25,6 +25,33 @@
       margin: 0 auto;
     }
     
+    /* Menu Home Button */
+    .home-menu {
+      max-width: 42rem;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      justify-content: flex-start;
+    }
+    
+    .home-btn {
+      background-color: #264b77;
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .home-btn:hover {
+      background-color: #1a3a5c;
+      transform: translateY(-1px);
+    }
+    
     header {
       text-align: center;
       margin-bottom: 2rem;
@@ -165,7 +192,7 @@
     
     .social-links a {
       color: #264b77;
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       transition: all 0.2s ease;
       text-decoration: none;
     }
@@ -186,7 +213,9 @@
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body>
+ <body><!-- Menu Home (Copy bagian ini ke semua halaman) -->
+  <div class="home-menu" style="display: none;"><a href="index.html" class="home-btn"> <i class="fas fa-home"></i> <span>Home</span> </a>
+  </div>
   <div class="container"><!-- Header -->
    <header>
     <h1>Aplikasi Islami</h1>
@@ -230,7 +259,7 @@
       Tasbih Digital
      </div></a>
    </main>
-  </div><!-- Footer Media Sosial -->
+  </div><!-- Footer Media Sosial (Copy bagian ini ke semua halaman) -->
   <footer>
    <div class="footer-container">
     <p class="footer-title">Ikuti Kami</p>
@@ -240,6 +269,13 @@
    </div>
   </footer>
   <script>
+    // Sembunyikan tombol Home di halaman index
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+      document.querySelector('.home-menu').style.display = 'none';
+    } else {
+      document.querySelector('.home-menu').style.display = 'flex';
+    }
+
     // Database lengkap untuk konten random
     const contentDatabase = {
       quran: [
@@ -303,5 +339,5 @@
 
     window.addEventListener('DOMContentLoaded', loadRandomContent);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9adbeab6859d604d',t:'MTc2NTY5NjU5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9addb641b754273f',t:'MTc2NTcxNTQyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
