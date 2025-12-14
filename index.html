@@ -45,6 +45,7 @@
       color: white;
       position: relative;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      min-height: 180px;
     }
     
     .inspiration-icon {
@@ -57,7 +58,19 @@
       font-size: 1.05rem;
       line-height: 1.6;
       margin-bottom: 0.5rem;
+    }
+    
+    .arabic-text {
+      font-size: 1.3rem;
+      line-height: 1.8;
+      margin-bottom: 0.75rem;
+      text-align: right;
+      direction: rtl;
+    }
+    
+    .translation-text {
       font-style: italic;
+      opacity: 0.95;
     }
     
     .inspiration-source {
@@ -178,13 +191,11 @@
    <header>
     <h1>Aplikasi Islami</h1>
    </header><!-- Kotak Inspirasi Random -->
-   <div class="inspiration-box"><button class="refresh-btn" onclick="changeInspiration()" title="Ganti"> <i class="fas fa-sync-alt"></i> </button>
-    <div class="inspiration-icon" id="inspirationIcon"><i class="fas fa-book-quran"></i>
-    </div>
-    <div class="inspiration-text" id="inspirationText">
-     Loading...
-    </div>
-    <div class="inspiration-source" id="inspirationSource">
+   <div class="inspiration-box" id="inspirationBox"><button class="refresh-btn" onclick="loadRandomContent()" id="refreshBtn" title="Ganti"> <i class="fas fa-sync-alt"></i> </button>
+    <div id="contentArea">
+     <div class="inspiration-icon" id="inspirationIcon"></div>
+     <div id="inspirationContent"></div>
+     <div class="inspiration-source" id="inspirationSource"></div>
     </div>
    </div><!-- Menu Grid -->
    <main class="menu-grid"><!-- Al-Qur'an --> <a href="quran.html" class="menu-card">
@@ -229,88 +240,68 @@
    </div>
   </footer>
   <script>
-    // Koleksi inspirasi (ayat, doa, hadits)
-    const inspirations = [
-      {
-        type: 'ayat',
-        icon: 'fa-book-quran',
-        text: 'وَمَن يَتَّقِ ٱللَّهَ يَجْعَل لَّهُۥ مَخْرَجًا - Dan barangsiapa bertakwa kepada Allah niscaya Dia akan mengadakan baginya jalan keluar.',
-        source: 'QS. At-Talaq: 2'
-      },
-      {
-        type: 'ayat',
-        icon: 'fa-book-quran',
-        text: 'إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا - Sesungguhnya bersama kesulitan ada kemudahan.',
-        source: 'QS. Al-Insyirah: 6'
-      },
-      {
-        type: 'ayat',
-        icon: 'fa-book-quran',
-        text: 'فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا - Maka sesungguhnya bersama kesulitan ada kemudahan.',
-        source: 'QS. Al-Insyirah: 5'
-      },
-      {
-        type: 'doa',
-        icon: 'fa-hands-praying',
-        text: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ - Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka.',
-        source: 'Doa Harian'
-      },
-      {
-        type: 'doa',
-        icon: 'fa-hands-praying',
-        text: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي - Ya Tuhanku, lapangkanlah dadaku dan mudahkanlah urusanku.',
-        source: 'Doa Memohon Kemudahan'
-      },
-      {
-        type: 'hadits',
-        icon: 'fa-scroll',
-        text: 'خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ - Sebaik-baik kalian adalah yang mempelajari Al-Qur\'an dan mengajarkannya.',
-        source: 'HR. Bukhari'
-      },
-      {
-        type: 'hadits',
-        icon: 'fa-scroll',
-        text: 'الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ - Mukmin yang kuat lebih baik dan lebih dicintai Allah daripada mukmin yang lemah.',
-        source: 'HR. Muslim'
-      },
-      {
-        type: 'ayat',
-        icon: 'fa-book-quran',
-        text: 'وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ - Dan janganlah kamu berputus asa dari rahmat Allah.',
-        source: 'QS. Yusuf: 87'
-      },
-      {
-        type: 'doa',
-        icon: 'fa-hands-praying',
-        text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا - Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima.',
-        source: 'Doa Memohon Ilmu'
-      },
-      {
-        type: 'hadits',
-        icon: 'fa-scroll',
-        text: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ - Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.',
-        source: 'HR. Muslim'
-      }
-    ];
+    // Database lengkap untuk konten random
+    const contentDatabase = {
+      quran: [
+        { arabic: 'وَمَن يَتَّقِ ٱللَّهَ يَجْعَل لَّهُۥ مَخْرَجًا', translation: 'Dan barangsiapa bertakwa kepada Allah niscaya Dia akan mengadakan baginya jalan keluar.', source: 'QS. At-Talaq: 2' },
+        { arabic: 'إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا', translation: 'Sesungguhnya bersama kesulitan ada kemudahan.', source: 'QS. Al-Insyirah: 6' },
+        { arabic: 'وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ', translation: 'Dan janganlah kamu berputus asa dari rahmat Allah.', source: 'QS. Yusuf: 87' },
+        { arabic: 'فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ', translation: 'Maka apabila engkau telah membulatkan tekad, maka bertawakallah kepada Allah.', source: 'QS. Ali Imran: 159' },
+        { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', translation: 'Dan katakanlah: Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.', source: 'QS. Taha: 114' }
+      ],
+      hadits: [
+        { arabic: 'خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ', translation: 'Sebaik-baik kalian adalah yang mempelajari Al-Qur\'an dan mengajarkannya.', source: 'HR. Bukhari' },
+        { arabic: 'الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ', translation: 'Mukmin yang kuat lebih baik dan lebih dicintai Allah daripada mukmin yang lemah.', source: 'HR. Muslim' },
+        { arabic: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ', translation: 'Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.', source: 'HR. Muslim' },
+        { arabic: 'الدِّينُ النَّصِيحَةُ', translation: 'Agama itu adalah nasihat.', source: 'HR. Muslim' },
+        { arabic: 'تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ', translation: 'Senyummu di hadapan saudaramu adalah sedekah.', source: 'HR. Tirmidzi' }
+      ],
+      doa: [
+        { arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ', translation: 'Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka.', source: 'QS. Al-Baqarah: 201' },
+        { arabic: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي', translation: 'Ya Tuhanku, lapangkanlah dadaku dan mudahkanlah urusanku.', source: 'QS. Taha: 25-26' },
+        { arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا', translation: 'Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima.', source: 'Doa Pagi' },
+        { arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ', translation: 'Cukuplah Allah sebagai penolong kami dan Allah adalah sebaik-baik pelindung.', source: 'QS. Ali Imran: 173' },
+        { arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً', translation: 'Ya Tuhan kami, janganlah Engkau jadikan hati kami condong kepada kesesatan setelah Engkau memberi petunjuk kepada kami.', source: 'QS. Ali Imran: 8' }
+      ]
+    };
 
-    let currentIndex = -1;
-
-    function changeInspiration() {
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * inspirations.length);
-      } while (newIndex === currentIndex && inspirations.length > 1);
+    function getRandomContent() {
+      const types = ['quran', 'hadits', 'doa'];
+      const randomType = types[Math.floor(Math.random() * types.length)];
+      const collection = contentDatabase[randomType];
+      const randomItem = collection[Math.floor(Math.random() * collection.length)];
       
-      currentIndex = newIndex;
-      const inspiration = inspirations[currentIndex];
-      
-      document.getElementById('inspirationIcon').innerHTML = `<i class="fas ${inspiration.icon}"></i>`;
-      document.getElementById('inspirationText').textContent = inspiration.text;
-      document.getElementById('inspirationSource').textContent = inspiration.source;
+      return {
+        type: randomType,
+        ...randomItem
+      };
     }
 
-    // Tampilkan inspirasi pertama kali saat halaman dimuat
-    window.addEventListener('DOMContentLoaded', changeInspiration);
+    function loadRandomContent() {
+      const content = getRandomContent();
+      displayContent(content);
+    }
+
+    function displayContent(content) {
+      const iconElement = document.getElementById('inspirationIcon');
+      const contentElement = document.getElementById('inspirationContent');
+      const sourceElement = document.getElementById('inspirationSource');
+
+      let icon = 'fa-book-quran';
+      if (content.type === 'hadits') icon = 'fa-scroll';
+      if (content.type === 'doa') icon = 'fa-hands-praying';
+
+      iconElement.innerHTML = `<i class="fas ${icon}"></i>`;
+      
+      contentElement.innerHTML = `
+        <div class="arabic-text">${content.arabic}</div>
+        <div class="translation-text">${content.translation}</div>
+      `;
+      
+      sourceElement.textContent = content.source;
+    }
+
+    window.addEventListener('DOMContentLoaded', loadRandomContent);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9adbd0314609fda4',t:'MTc2NTY5NTUxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9adbeab6859d604d',t:'MTc2NTY5NjU5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
