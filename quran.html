@@ -172,7 +172,7 @@
    <div class="main-content">
     <div style="max-width: 900px; margin: 0 auto; padding: 32px 24px;"><!-- Welcome Screen -->
      <div id="welcome" style="text-align: center; padding: 80px 20px;">
-      <div class="surah-name-arabic" style="font-size: clamp(25px, 4vw, 35px); color: #1a472a; margin-bottom: 24px; line-height: 1.2;">
+      <div class="surah-name-arabic" style="font-size: clamp(35px, 8vw, 35px); color: #1a472a; margin-bottom: 24px; line-height: 1.2;">
        ﷽
       </div>
       <h2 style="font-size: clamp(24px, 5vw, 32px); font-weight: 600; color: #1a472a; margin-bottom: 16px;">Al-Quran Digital</h2>
@@ -349,6 +349,14 @@
     async function loadSurah(num) {
       currentSurah = surahList.find(s => s.no === num);
       
+      // Stop audio completely when changing surah
+      audioPlayer.pause();
+      audioPlayer.src = '';
+      isPlayingFull = false;
+      currentAyahIndex = 0;
+      document.getElementById('play-full-icon').className = 'fas fa-play';
+      document.getElementById('audio-progress').style.display = 'none';
+      
       // Update active state
       document.querySelectorAll('.surah-item').forEach(el => el.classList.remove('active'));
       document.getElementById(`surah-${num}`).classList.add('active');
@@ -408,8 +416,8 @@
       // Add Bismillah for all surahs except At-Taubah (9) and Al-Fatihah (1)
       if (surahData.nomor !== 1 && surahData.nomor !== 9) {
         html += `
-          <div class="bismillah arabic-text">
-            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          <div class="surah-name-arabic" style="text-align: center; font-size: 40px; color: #1a472a; padding: 32px 24px; margin-bottom: 24px; background: white; border-radius: 12px; border: 2px solid #e5e5e5;">
+            ﷽
           </div>
         `;
       }
@@ -475,22 +483,32 @@
       
       const ayah = currentSurahData.ayat[currentAyahIndex];
       audioPlayer.src = ayah.audio['05'];
-      audioPlayer.play();
+      
+      // Scroll to current ayah BEFORE playing
+      const ayahEl = document.getElementById(`ayah-${ayah.nomorAyat}`);
+      if (ayahEl) {
+        // Scroll with smooth animation
+        ayahEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Highlight the ayah being played
+        ayahEl.style.background = '#fffacd';
+        ayahEl.style.transition = 'background 0.5s ease';
+      }
+      
+      // Play audio after a short delay to ensure scroll starts
+      setTimeout(() => {
+        audioPlayer.play();
+      }, 300);
       
       // Update progress
       updateProgress();
       
-      // Scroll to current ayah
-      const ayahEl = document.getElementById(`ayah-${ayah.nomorAyat}`);
-      if (ayahEl) {
-        ayahEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        ayahEl.style.background = '#fffacd';
-        setTimeout(() => {
-          ayahEl.style.background = '#fffef8';
-        }, 2000);
-      }
-      
       audioPlayer.onended = () => {
+        // Remove highlight
+        if (ayahEl) {
+          ayahEl.style.background = '#fffef8';
+        }
+        
         // Auto reveal in murajaah mode
         if (murajaahMode) {
           revealAyah(ayah.nomorAyat);
@@ -668,5 +686,5 @@
 
     fetchSurahList();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aeeeac02180c09d',t:'MTc2NTg5NTgyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af15e7ef3278a13',t:'MTc2NTkyMTU0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
