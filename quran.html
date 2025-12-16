@@ -104,6 +104,10 @@
       border-left: 4px solid #1a472a;
     }
     
+    #controls-dropdown button:hover {
+      background: #f8f8f8;
+    }
+    
     @media (max-width: 768px) {
       .sidebar {
         transform: translateX(-100%);
@@ -178,7 +182,9 @@
       <div id="surah-header" style="background: white; padding: 32px; border-radius: 12px; border: 2px solid #e5e5e5; text-align: center; margin-bottom: 24px;"><!-- Dynamic -->
       </div><!-- Controls -->
       <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #e5e5e5; margin-bottom: 24px;">
-       <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;"><button id="play-full-btn" onclick="playFullSurah()" style="background: #1a472a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px;"> <i id="play-full-icon" class="fas fa-play"></i> <span>Putar Surah</span> </button> <button onclick="toggleTranslation()" style="background: #555; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px;"> <i id="trans-icon" class="fas fa-eye-slash"></i> <span id="trans-text">Sembunyikan Terjemahan</span> </button> <button id="murajaah-btn" onclick="toggleMurajaah()" style="background: #7b5e00; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px;"> <i id="murajaah-icon" class="fas fa-book-open"></i> <span id="murajaah-text">Mode Murajaah</span> </button>
+       <div style="position: relative; margin-bottom: 16px;"><button onclick="toggleDropdown()" style="background: #1a472a; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; width: 100%; justify-content: space-between;"> <span><i class="fas fa-cog"></i> Pengaturan</span> <i id="dropdown-icon" class="fas fa-chevron-down"></i> </button>
+        <div id="controls-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #e5e5e5; border-radius: 8px; margin-top: 8px; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;"><button id="play-full-btn" onclick="playFullSurah()" style="background: none; color: #1a472a; border: none; border-bottom: 1px solid #f0f0f0; padding: 14px 20px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; transition: background 0.2s;"> <i id="play-full-icon" class="fas fa-play" style="width: 20px;"></i> <span>Putar Surah</span> </button> <button onclick="toggleTranslation()" style="background: none; color: #1a472a; border: none; border-bottom: 1px solid #f0f0f0; padding: 14px 20px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; transition: background 0.2s;"> <i id="trans-icon" class="fas fa-eye-slash" style="width: 20px;"></i> <span id="trans-text">Sembunyikan Terjemahan</span> </button> <button id="murajaah-btn" onclick="toggleMurajaah()" style="background: none; color: #1a472a; border: none; padding: 14px 20px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; transition: background 0.2s;"> <i id="murajaah-icon" class="fas fa-book-open" style="width: 20px;"></i> <span id="murajaah-text">Mode Murajaah</span> </button>
+        </div>
        </div>
        <div id="audio-progress" style="display: none;">
         <div style="font-size: 13px; color: #666; margin-bottom: 8px;"><i class="fas fa-volume-up"></i> Ayat: <span id="current-ayah-num">1</span> / <span id="total-ayah">0</span>
@@ -218,6 +224,7 @@
     let audioPlayer = new Audio();
     let isPlayingFull = false;
     let currentAyahIndex = 0;
+    let dropdownOpen = false;
     
     // Convert to Arabic-Indic numerals
     function toArabicNumber(num) {
@@ -265,6 +272,32 @@
         ["whatsapp_url", cfg.whatsapp_url || defaultConfig.whatsapp_url]
       ]);
     }
+
+    function toggleDropdown() {
+      dropdownOpen = !dropdownOpen;
+      const dropdown = document.getElementById('controls-dropdown');
+      const icon = document.getElementById('dropdown-icon');
+      
+      if (dropdownOpen) {
+        dropdown.style.display = 'block';
+        icon.className = 'fas fa-chevron-up';
+      } else {
+        dropdown.style.display = 'none';
+        icon.className = 'fas fa-chevron-down';
+      }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('controls-dropdown');
+      const dropdownBtn = event.target.closest('button[onclick="toggleDropdown()"]');
+      
+      if (dropdown && dropdownOpen && !dropdown.contains(event.target) && !dropdownBtn) {
+        dropdownOpen = false;
+        dropdown.style.display = 'none';
+        document.getElementById('dropdown-icon').className = 'fas fa-chevron-down';
+      }
+    });
 
     // Fetch surah list from API
     async function fetchSurahList() {
@@ -581,7 +614,7 @@
         });
         icon.className = 'fas fa-brain';
         text.textContent = 'Mode: Murajaah Aktif';
-        btn.style.background = '#d97706';
+        btn.style.color = '#d97706';
       } else {
         // Show all Arabic text and hide reveal buttons
         const containers = document.querySelectorAll('.ayah-container');
@@ -599,7 +632,7 @@
         });
         icon.className = 'fas fa-book-open';
         text.textContent = 'Mode Murajaah';
-        btn.style.background = '#7b5e00';
+        btn.style.color = '#1a472a';
       }
     }
 
@@ -635,5 +668,5 @@
 
     fetchSurahList();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aeedd8dd101a24f',t:'MTc2NTg5NTI4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aeeeac02180c09d',t:'MTc2NTg5NTgyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
